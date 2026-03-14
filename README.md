@@ -1,7 +1,3 @@
-# mctop is an Archived Prjoect
-
-mctop is no longer actively maintained. Your mileage with patches may vary.
-
 # mctop
 
 Inspired by "top", mctop passively sniffs the network traffic passing in and out of a
@@ -71,6 +67,7 @@ The following details are displayed in the status bar
 
 ## Changelog
 
+* 2026-03-14 - Add support for Ruby 3.4.x and Meta protocol
 * 2012-12-14 - Now compatible with Ruby 1.8.x (tested on 1.8.7-p371)
 
 ## Known issues / Gotchas
