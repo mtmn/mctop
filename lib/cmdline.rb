@@ -1,5 +1,4 @@
 require 'optparse'
-require 'pcap'
 
 class CmdLine
   def self.parse(args)

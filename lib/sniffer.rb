@@ -1,4 +1,4 @@
-require 'pcap'
+require 'pcaprub'
 require 'thread'
 
 class MemcacheSniffer
@@ -20,7 +20,7 @@ class MemcacheSniffer
   end
 
   def start
-    cap = Pcap::Capture.open_live(@source, 1500)
+    cap = PCAPRUB::Pcap.open_live(@source, 1500, true, 100)
 
     @metrics[:start_time] = Time.new.to_f
 
@@ -32,29 +32,34 @@ class MemcacheSniffer
       cap.setfilter("host #{@host} and port #{@port}")
     end
 
-    cap.loop do |packet|
-      @metrics[:stats] = cap.stats
+    cap.each do |packet|
+      raw_stats = cap.stats
+      @metrics[:stats] = { 
+        :recv => raw_stats["recv"] || 0,
+        :drop => raw_stats["drop"] || 0
+      }
 
-      # parse key name, and size from VALUE responses
-      if packet.raw_data =~ /VALUE (\S+) \S+ (\S+)/
+      if packet =~ /VALUE (\S+) \S+ (\S+)/
         key   = $1
         bytes = $2
-
         @semaphore.synchronize do
-          if @metrics[:calls].has_key?(key)
-            @metrics[:calls][key] += 1
-          else
-            @metrics[:calls][key] = 1
-          end
-
+          @metrics[:calls][key] ||= 0
+          @metrics[:calls][key] += 1
           @metrics[:objsize][key] = bytes.to_i
         end
+      elsif packet =~ /mg (\S+)/
+        key = $1
+        @semaphore.synchronize do
+          @metrics[:calls][key] ||= 0
+          @metrics[:calls][key] += 1
+          @metrics[:objsize][key] ||= 0
+        end
+      elsif packet =~ /VA (\d+)/
+        bytes = $1
       end
 
       break if @done
     end
-
-    cap.close
   end
 
   def done
