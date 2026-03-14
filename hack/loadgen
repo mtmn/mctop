@@ -1,0 +1,23 @@
+#!/bin/bash
+
+HOST="127.0.0.1"
+PORT="11211"
+KEYS_COUNT=20
+SLEEP_INTERVAL=0.05
+
+while true; do
+  # Generate a random key and value
+  KEY="mock_key_$((RANDOM % KEYS_COUNT))"
+  VALUE="mock_value_$((RANDOM % 100))"
+  VALUE_LENGTH=${#VALUE}
+
+  # Format: set <key> <flags> <exptime> <bytes>\r\n<data>\r\n
+  printf "set $KEY 0 60 $VALUE_LENGTH\r\n$VALUE\r\n" | nc -q 0 $HOST $PORT > /dev/null 2>&1
+
+  for i in {1..5}; do
+    printf "get $KEY\r\n" | nc -q 0 $HOST $PORT > /dev/null 2>&1
+  done
+
+  # Small sleep to control the rate
+  sleep $SLEEP_INTERVAL
+done
