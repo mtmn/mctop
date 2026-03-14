@@ -8,7 +8,7 @@ bandwidth.
 You can read more detail about why this tool evovled over on our
 [code as craft](http://codeascraft.etsy.com/2012/12/13/mctop-a-tool-for-analyzing-memcache-get-traffic) blog.
 
-mctop depends on the [ruby-pcap](https://rubygems.org/gems/ruby-pcap) gem, if you don't have
+mctop depends on the [pcaprub](https://github.com/pcaprub/pcaprub) gem, if you don't have
 this installed you'll need to ensure you have the development pcap libraries (libpcap-devel
 package on most linux distros) to build the native gem.
 
