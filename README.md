@@ -1,4 +1,5 @@
 # mctop
+> This is a fork of [etsy/mctop](https://github.com/etsy/mctop) that works with modern Ruby and adds [Meta Text Protocol](https://docs.memcached.org/protocols/meta/) support.
 
 Inspired by "top", mctop passively sniffs the network traffic passing in and out of a
 server's network interface and tracks the keys responding to memcache get commands. The output
